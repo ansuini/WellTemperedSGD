@@ -30,6 +30,8 @@ def compute_snr(grad, grad2, num_mb):
     '''
     Compute snr
     '''  
+    epsilon = 1e-8
+    
     snr   = []
     for g, g2 in zip(grad, grad2):
         
@@ -39,11 +41,15 @@ def compute_snr(grad, grad2, num_mb):
         # compute average of squared gradients
         g2 = g2/num_mb
         
+        # normalize error if zero to avoid division by zero
+        #g2[g2==0] = epsilon
+        
         # compute error
         
         err = torch.sqrt( ( g2 - g*g )/ num_mb )
         
-        # normalize error if zero
+        
+        
         
         # compute signal to error ratio
     
