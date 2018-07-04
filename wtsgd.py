@@ -2,7 +2,7 @@ import torch
 
 def init_grad(model):
     '''
-    Init a list of variables with the same shape of model.parameters()
+    Init to zero a list of tensors with the same shape of model.parameters()
     '''
     grad = []
     for param in model.parameters():      
@@ -11,6 +11,7 @@ def init_grad(model):
 
 def acc_grad(grad, model):
     '''
+    Accumulate grad (computed on a minibatch)
     '''
     for g, param in zip(grad, model.parameters()):
         g += param.grad
@@ -20,7 +21,7 @@ def acc_grad(grad, model):
         
 def acc_grad2(grad2, model):
     '''
-    Elementwise multiplication
+    Accumulate squared grad (computed on a minibatch)
     '''
     for g, param in zip(grad2, model.parameters()):
         g += param.grad*param.grad
@@ -35,21 +36,19 @@ def compute_snr(grad, grad2, num_mb):
     snr   = []
     for g, g2 in zip(grad, grad2):
         
-        # compute average of gradient on minibatches
+        # average of gradient on minibatches
         g = g/num_mb        
         
-        # compute average of squared gradients
+        # average of squared gradients
         g2 = g2/num_mb
         
-        # normalize error if zero to avoid division by zero
-        #g2[g2==0] = epsilon
+        # add a small quantity to squared grad (if zero) to avoid division by zero in err computation
+        g2[g2==0] = epsilon
         
         # compute error
         
         err = torch.sqrt( ( g2 - g*g )/ num_mb )
-        
-        
-        
+    
         
         # compute signal to error ratio
     
