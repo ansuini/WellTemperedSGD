@@ -27,7 +27,7 @@ def acc_grad2(grad2, model):
         g += param.grad*param.grad
     return grad2
 
-def compute_snr(grad, grad2, num_mb):
+def compute_snr(grad, grad2, n):
     '''
     Compute snr
     '''  
@@ -35,22 +35,14 @@ def compute_snr(grad, grad2, num_mb):
     
     snr   = []
     for g, g2 in zip(grad, grad2):
-        
-        # average of gradient on minibatches
-        g = g/num_mb        
-        
-        # average of squared gradients
-        g2 = g2/num_mb
-        
+       
         # add a small quantity to squared grad (if zero) to avoid division by zero in err computation
         g2[g2==0] = epsilon
         
-        # compute error
+        # compute error        
+        err = torch.sqrt( ( g2/n - g/n*g/n )/ n )
         
-        err = torch.sqrt( ( g2 - g*g )/ num_mb )
-    
-        
-        # compute signal to error ratio
-    
+        # compute signal to error ratio    
         snr.append( torch.abs(g)/err ) 
+        
     return snr
