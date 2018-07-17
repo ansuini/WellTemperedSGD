@@ -15,7 +15,6 @@ def acc_grad(grad, model):
     '''
     for g, param in zip(grad, model.parameters()):
         g += param.grad
-        
     return grad
 
         
@@ -33,16 +32,25 @@ def compute_snr(grad, grad2, n):
     '''  
     epsilon = 1e-8
     
+    
     snr   = []
     for g, g2 in zip(grad, grad2):
        
+        g_copy  = g.clone()
+        g2_copy = g2.clone()
+    
         # add a small quantity to squared grad (if zero) to avoid division by zero in err computation
-        g2[g2==0] = epsilon
+        g2_copy[g2_copy==0] = epsilon
+        
+        # average over number of mini-batches in a large batch
+        
+        g_copy = g_copy/n    # this is what we called A  bar
+        g2_copy = g2_copy/n  # this is what we called A2 bar
         
         # compute error        
-        err = torch.sqrt( ( g2/n - g/n*g/n )/ n )
+        err = torch.sqrt( ( g2_copy - g_copy*g_copy )/ n )
         
         # compute signal to error ratio    
-        snr.append( torch.abs(g)/err ) 
+        snr.append( torch.abs(g_copy)/err ) 
         
     return snr
