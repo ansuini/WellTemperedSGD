@@ -1,9 +1,7 @@
 TODO*
-data/
+OLD/
 results/
 __pycache__/
 .ipynb_checkpoints/
 old/
-*.pt
-*.npy
 *.pyc
