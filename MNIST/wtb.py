@@ -152,28 +152,6 @@ def stats(model, loader, device):
     return loss.item(),acc
 
 
-batch_size=6000
-nsamples_train=60000
-momentum=0.0
-epochs=3
-lr=0.01
-seed=1101
-WTB = True # if False use normal backpropagation
-SAVE = True
-
-
-
-
-batch_size=6000
-nsamples_train=60000
-momentum=0.0
-epochs=3
-lr=0.01
-seed=1101
-WTB = True # if False use normal backpropagation
-SAVE = True
-
-
 def main():
 
     #------------------------------------ Arguments --------------------------------------------
@@ -258,7 +236,7 @@ def main():
 
     train_stats = []
     test_stats = []
-    if WTB:
+    if args.wtb:
         fraction = []
 
     # init snr to 1 the first time
